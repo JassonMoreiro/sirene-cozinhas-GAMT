@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# sirene-cozinhas-GAMT
-=======
 # Sirene Cozinha (GAMT)
 
 > **Objetivo (GAMT):** reduzir deslocamentos e perda de tempo. Em vez de “ficar andando pelo local” para avisar o que está faltando, o processo vira um fluxo organizado: quem percebe a falta envia um pedido e a **cozinha monitora** com alertas.

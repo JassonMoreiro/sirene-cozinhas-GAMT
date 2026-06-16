@@ -1,0 +1,22 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*.swo
+
+# Netlify build/output (se houver)
+.netlify/
+
+# Caches / logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Google Apps Script local artifacts (if any)
+*.gsx
+
+# Local env
+.env
+

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Envio Barracão - Sirene</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Paleta do evento (ajustada para combinar com a foto do background) */
+      --primary: #ffb020;          /* dourado/laranja quente */
+      --primary-hover: #ff8a00;    /* mais vivo para hover */
+
+      --bg: #ffffff;               /* azul quase-preto */
+      --card-bg: rgb(255, 255, 255);
+
+      --text-main: #f8fafc;
+      --text-muted: #a8b3cf;      /* menos acinzentado, mais suave */
+
+      --success: #26c26a;
+      --error: #ff4b4b;
+
+      /* extras para bordas/sombras */
+      --ring: rgba(255, 176, 32, 0.22);
+      --border: rgba(255, 255, 255, 0.12);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.72)),
+                  url('./fds01_arraia2026.jpeg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 2.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 450px;
+      border: 1px solid var(--border);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+      letter-spacing: -0.025em;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-main);
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      box-sizing: border-box;
+      font-size: 1rem;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .success { background-color: rgba(38, 194, 106, 0.14); color: #18a957; border: 1px solid rgba(38, 194, 106, 0.35); display: block; }
+    .error { background-color: rgba(255, 75, 75, 0.14); color: #ff3d3d; border: 1px solid rgba(255, 75, 75, 0.35); display: block; }
+
+    .container {
+      position: relative;
+    }
+
+    .logo-wrap {
+      position: absolute;
+      top: -86px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: 240px;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .logo-spacer {
+      height: 26px;
+    }
+
+    .footer-links {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 1.5rem;
+    }
+
+    .link-btn {
+      text-align: center;
+      font-size: 0.875rem;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .link-btn:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    .config-link {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .config-link:hover {
+      color: var(--text-main);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-wrap">
+      <img class="gamt-logo" src="./logo - gamt - branca (5).png" alt="GAMT" />
+    </div>
+    <header>
+      <div class="logo-spacer"></div>
+      <h1>Envio Barracão</h1>
+      <p class="subtitle">O que precisamos na cozinha?</p>
+    </header>
+
+
+
+    <div class="form-group">
+      <label for="item">Item</label>
+      <input type="text" id="item" placeholder="Ex: Queijo, Carne, Alface..." required>
+    </div>
+
+    <div class="form-group">
+      <label for="setor">Produto</label>
+      <input type="text" id="setor" placeholder="Ex: Caldinho, Galinhada..." required>
+    </div>
+
+    <button id="btnEnviar" onclick="enviar()">
+      <span id="btnText">ENVIAR PEDIDO</span>
+      <div id="btnSpinner" class="spinner" style="display: none;"></div>
+    </button>
+
+    <div id="status" class="message"></div>
+
+    <div class="footer-links">
+      <a href="cozinha.html" class="link-btn">Acessar Monitor da Cozinha</a>
+      <span class="config-link" onclick="configurarURL()">⚙️</span>
+    </div>
+  </div>
+
+  <script>
+    let API_URL = localStorage.getItem('appscript_url') || 'https://script.google.com/macros/s/AKfycbyB9SKMkqlpd4xq5yPLucHmeG4pdu3uKweYTayNnX_2BEjy5fMwspYE328F4bsCN5Fr/exec';
+    const isAppScript = typeof google !== 'undefined' && google.script && google.script.run;
+
+    function configurarURL() {
+      const url = prompt('Insira a URL de Implantação do AppScript:', API_URL);
+      if (url) {
+        API_URL = url;
+        localStorage.setItem('appscript_url', url);
+        alert('Configuração salva!');
+      }
+    }
+
+    function enviar() {
+      const item = document.getElementById('item').value.trim();
+      const setor = document.getElementById('setor').value.trim();
+      const btn = document.getElementById('btnEnviar');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const status = document.getElementById('status');
+
+      if (!item || !setor) {
+        showMessage('Por favor, preencha todos os campos.', 'error');
+        return;
+      }
+
+      setLoading(true);
+      status.style.display = 'none';
+
+      if (isAppScript) {
+        google.script.run
+          .withSuccessHandler(handleResponse)
+          .withFailureHandler(handleError)
+          .enviarAlerta(item, setor);
+      } else {
+        const url = `${API_URL}?action=enviar&item=${encodeURIComponent(item)}&setor=${encodeURIComponent(setor)}`;
+        fetch(url)
+          .then(res => res.json())
+          .then(handleResponse)
+          .catch(handleError);
+      }
+
+      function setLoading(loading) {
+        btn.disabled = loading;
+        btnText.style.display = loading ? 'none' : 'block';
+        btnSpinner.style.display = loading ? 'block' : 'none';
+      }
+
+      function handleResponse(res) {
+        setLoading(false);
+        if (res.success) {
+          showMessage('✅ Pedido enviado com sucesso!', 'success');
+          document.getElementById('item').value = '';
+          document.getElementById('setor').value = '';
+          document.getElementById('item').focus();
+        } else {
+          showMessage('❌ Erro: ' + (res.error || 'Erro desconhecido'), 'error');
+        }
+      }
+
+      function handleError(err) {
+        setLoading(false);
+        showMessage('⚠️ Falha na conexão com o servidor.', 'error');
+        console.error(err);
+      }
+    }
+
+    function showMessage(text, type) {
+      const status = document.getElementById('status');
+      status.innerText = text;
+      status.className = 'message ' + type;
+      status.style.display = 'block';
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 4000);
+    }
+
+    if (isAppScript) {
+      document.querySelector('.config-link').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

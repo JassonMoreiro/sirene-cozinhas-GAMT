@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Envio Barracão - Sirene</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      transition: transform 0.2s;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+      letter-spacing: -0.025em;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--text-main);
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      box-sizing: border-box;
+      font-size: 1rem;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    button:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .success { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; display: block; }
+    .error { background-color: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Sirene Barracão</h1>
+      <p class="subtitle">O que precisamos na cozinha?</p>
+    </header>
+
+    <div class="form-group">
+      <label for="item">Produto / Item</label>
+      <input type="text" id="item" placeholder="Ex: Batata Frita, Alface..." required>
+    </div>
+
+    <div class="form-group">
+      <label for="setor">Setor de Destino</label>
+      <input type="text" id="setor" placeholder="Ex: Barracão Principal, Salão..." required>
+    </div>
+
+    <button id="btnEnviar" onclick="enviar()">
+      <span id="btnText">ENVIAR PEDIDO</span>
+      <div id="btnSpinner" class="spinner" style="display: none;"></div>
+    </button>
+
+    <div id="status" class="message"></div>
+  </div>
+
+  <script>
+    function enviar() {
+      const item = document.getElementById('item').value.trim();
+      const setor = document.getElementById('setor').value.trim();
+      const btn = document.getElementById('btnEnviar');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const status = document.getElementById('status');
+
+      if (!item || !setor) {
+        showMessage('Por favor, preencha todos os campos.', 'error');
+        return;
+      }
+
+      setLoading(true);
+      status.style.display = 'none';
+
+      google.script.run
+        .withSuccessHandler(handleResponse)
+        .withFailureHandler(handleError)
+        .enviarAlerta(item, setor);
+
+      function setLoading(loading) {
+        btn.disabled = loading;
+        btnText.style.display = loading ? 'none' : 'block';
+        btnSpinner.style.display = loading ? 'block' : 'none';
+      }
+
+      function handleResponse(res) {
+        setLoading(false);
+        if (res.success) {
+          showMessage('✅ Pedido enviado com sucesso!', 'success');
+          document.getElementById('item').value = '';
+          document.getElementById('setor').value = '';
+          document.getElementById('item').focus();
+        } else {
+          showMessage('❌ Erro: ' + (res.error || 'Erro desconhecido'), 'error');
+        }
+      }
+
+      function handleError(err) {
+        setLoading(false);
+        showMessage('⚠️ Falha na conexão com o servidor.', 'error');
+        console.error(err);
+      }
+    }
+
+    function showMessage(text, type) {
+      const status = document.getElementById('status');
+      status.innerText = text;
+      status.className = 'message ' + type;
+      status.style.display = 'block';
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
